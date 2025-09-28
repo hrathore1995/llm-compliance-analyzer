@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Compliance Analyzer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📑 LLM Compliance Analyzer</h1>
+
+    <!-- Health Check -->
+    <section class="card">
+      <h2>System Health</h2>
+      <button onclick="checkHealth()">Check API Health</button>
+      <p id="healthStatus"></p>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="card">
+      <h2>Upload Document</h2>
+      <input type="file" id="fileInput" />
+      <button onclick="uploadFile()">Upload</button>
+      <p id="uploadStatus"></p>
+    </section>
+
+    <!-- Ask Section -->
+    <section class="card">
+      <h2>Ask a Question</h2>
+      <input type="text" id="queryInput" placeholder="e.g., Does this mention HIPAA?" />
+      <button onclick="askQuestion()">Ask</button>
+      <div id="answer"></div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="card">
+      <h2>Search Chunks</h2>
+      <input type="text" id="searchInput" placeholder="Enter keyword..." />
+      <button onclick="searchDocs()">Search</button>
+      <ul id="searchResults"></ul>
+    </section>
+  </div>
+
+  <script>
+    const API_BASE = "/api/documents";
+
+    // Health check
+    async function checkHealth() {
+      const healthEl = document.getElementById("healthStatus");
+      try {
+        const res = await fetch("/api/health");
+        const data = await res.json();
+        healthEl.textContent = `✅ ${data.message}`;
+      } catch (err) {
+        console.error(err);
+        healthEl.textContent = "❌ Backend not reachable";
+      }
+    }
+
+    // Upload file
+    async function uploadFile() {
+      const fileInput = document.getElementById("fileInput");
+      const statusEl = document.getElementById("uploadStatus");
+
+      if (!fileInput.files.length) {
+        statusEl.textContent = "Please select a file first.";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      try {
+        const res = await fetch(`${API_BASE}/upload`, {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+
+        if (data.error) {
+          statusEl.textContent = `❌ ${data.error}`;
+        } else {
+          statusEl.textContent = `✅ Uploaded ${data.filename} (${data.num_chunks} chunks)`;
+        }
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "❌ Upload failed";
+      }
+    }
+
+    // Ask question with LLM
+    async function askQuestion() {
+      const query = document.getElementById("queryInput").value;
+      const answerEl = document.getElementById("answer");
+
+      if (!query) {
+        answerEl.textContent = "Please enter a question.";
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/ask?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        answerEl.textContent = data.answer 
+          ? `🤖 Answer: ${data.answer}` 
+          : "❌ No answer returned";
+      } catch (err) {
+        console.error(err);
+        answerEl.textContent = "❌ Error asking question";
+      }
+    }
+
+    // Search chunks (no LLM)
+    async function searchDocs() {
+      const query = document.getElementById("searchInput").value;
+      const resultsEl = document.getElementById("searchResults");
+      resultsEl.innerHTML = "";
+
+      if (!query) {
+        resultsEl.innerHTML = "<li>Please enter a search term.</li>";
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/search?query=${encodeURIComponent(query)}&top_k=5`);
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          resultsEl.innerHTML = "<li>No results found.</li>";
+          return;
+        }
+
+        data.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = `${item.chunk} (from ${item.metadata.filename})`;
+          resultsEl.appendChild(li);
+        });
+      } catch (err) {
+        console.error(err);
+        resultsEl.innerHTML = "<li>❌ Error searching documents</li>";
+      }
+    }
+  </script>
+</body>
+</html>

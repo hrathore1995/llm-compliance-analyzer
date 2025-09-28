@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+
+# Virtual environment
+venv/
+.env
+*.env
+
+# Logs
+*.log
+*.out
+*.err
+
+# Byte-compiled
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+
+# Frontend build
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.next/
+
+# Docker
+.qdrant_data/
+docker-compose.override.yml
+
+# Uploads and data
+data/uploads/

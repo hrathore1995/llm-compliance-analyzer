@@ -1,0 +1,23 @@
+# Ignore Python cache and venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info
+venv/
+.env
+
+# Git
+.git
+.gitignore
+
+# macOS
+.DS_Store
+
+# Local development
+.vscode/
+*.log
+
+# Node frontend artifacts (not needed inside backend container)
+frontend/node_modules
+frontend/dist

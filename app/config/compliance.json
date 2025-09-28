@@ -1,0 +1,17 @@
+{
+  "HIPAA": [
+    {"pattern": "patient", "description": "Mentions patient data"},
+    {"pattern": "medical record", "description": "Protected Health Information"},
+    {"pattern": "diagnosis", "description": "Health data - PHI"}
+  ],
+  "FERPA": [
+    {"pattern": "student record", "description": "FERPA protected data"},
+    {"pattern": "transcript", "description": "Academic record"},
+    {"pattern": "grades", "description": "Personally identifiable student info"}
+  ],
+  "SOX": [
+    {"pattern": "audit trail", "description": "SOX compliance requirement"},
+    {"pattern": "financial disclosure", "description": "Public company reporting"},
+    {"pattern": "SEC filing", "description": "SOX related filing"}
+  ]
+}

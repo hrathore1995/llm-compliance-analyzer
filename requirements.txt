@@ -1,0 +1,22 @@
+# FastAPI & ASGI
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+
+# Document parsing
+PyPDF2==3.0.1
+python-docx==1.1.0
+
+# LangChain + Qdrant
+langchain==0.2.16
+langchain-community==0.2.16
+langchain-openai==0.1.8
+qdrant-client==1.9.0
+
+# OpenAI API
+openai==1.40.3
+
+# Utilities
+pydantic==2.7.4
+requests==2.31.0
+python-dotenv==1.0.1
